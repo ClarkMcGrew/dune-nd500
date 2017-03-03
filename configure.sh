@@ -34,5 +34,8 @@ if ! (spack repo list --scope=site | grep nd574-spack); then
 fi
 
 # Make sure that the compilers are known.
+if [ -f ${SPACK_CONFIG}/linux/compilers.yaml ]; then
+    rm -f ${SPACK_CONFIG}/linux/compilers.yaml
+fi
 spack compiler find
 
