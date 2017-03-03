@@ -8,9 +8,14 @@ if [ ! -d ./spack ]; then
 fi
 (cd spack; git pull)
 
+cat <<EOF > spack-setup.sh
 export SPACK_CONFIG
 SPACK_CONFIG=$(pwd)/spack-config
-source ./spack/share/spack/setup-env.sh
+. $(pwd)/spack/share/spack/setup-env.sh
+alias spack-setup=". $(pwd)/spack-setup.sh"
+EOF
+
+. ./spack-setup.sh
 
 # Make sure hep-spack is up-to-date.
 if [ ! -d ./hep-spack ]; then
@@ -23,5 +28,11 @@ if ! (spack repo list --scope=site | grep hep-spack); then
     spack repo add --scope=site ./hep-spack
 fi
 
+# Make sure the nd574-spack repo is known to spack.
+if ! (spack repo list --scope=site | grep nd574-spack); then
+    spack repo add --scope=site ./nd574-spack
+fi
+
 # Make sure that the compilers are known.
 spack compiler find
+

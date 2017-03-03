@@ -1,0 +1,5 @@
+packages:
+   all:
+     # Setup the preferred compilers.  This should be updated as
+     # software becomes compatible.
+     compiler: [gcc@4.9, gcc@4.8, gcc]
