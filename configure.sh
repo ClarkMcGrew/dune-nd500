@@ -8,14 +8,7 @@ if [ ! -d ./spack ]; then
 fi
 (cd spack; git pull)
 
-cat <<EOF > spack-setup.sh
-export SPACK_CONFIG
-SPACK_CONFIG=$(pwd)/spack-config
-. $(pwd)/spack/share/spack/setup-env.sh
-alias spack-setup=". $(pwd)/spack-setup.sh"
-EOF
-
-. ./spack-setup.sh
+. ./setup.sh
 
 # Make sure hep-spack is up-to-date.
 if [ ! -d ./hep-spack ]; then
