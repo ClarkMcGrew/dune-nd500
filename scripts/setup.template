@@ -1,0 +1,35 @@
+#!/bin/bash
+#
+# A generic setup script for any ND574 release.  The original file is
+# called setup.template, and installed by nd574-release when a new release
+# is created.  This file will be looked for by nd574-setup to make the
+# release file available.  This can be run by hand using
+#
+# source ./setup.sh
+#
+
+export ND574_ROOT
+ND574_ROOT=$(dirname $(realpath ${BASH_SOURCE}))
+
+___path_remove ()  {
+    export $1=$(eval echo -n \$$1 | \
+	awk -v RS=: -v ORS=: '$0 != "'$2'"' | \
+	sed 's/:$//'); 
+}
+___path_append ()  {
+    ___path_remove $1 $2
+    eval export $1="\$$1:$2"
+}
+___path_prepend () {
+    ___path_remove $1 $2
+    eval export $1="$2:\$$1"
+}
+
+# Update the environment.
+___path_prepend PATH "${ND574_ROOT}/bin"
+___path_prepend LD_LIBRARY_PATH "${ND574_ROOT}/lib"
+___path_prepend CMAKE_FIND_ROOT_PATH ${ND574_ROOT}
+
+unset -f ___path_append
+unset -f ___path_prepend
+unset -f ___path_remove

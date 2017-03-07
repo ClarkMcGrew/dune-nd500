@@ -1,0 +1,86 @@
+#!/bin/bash
+#
+#  Build and install a release for use.  This takes a single argument
+#  which is the release version.  For example
+#
+#  nd574-release release@develop
+#  nd574-release release@3.1.4
+#  nd574-release production@1.0.0
+#
+# By default, these create a spack "view" in
+#  ${ND574_SPACK_ROOT}/releases/. For example, 
+#
+#  nd574-release release@develop
+#
+# will create
+#
+# ${ND574_SPACK_ROOT}/releases/release@develop~<architecture>/
+#
+# OPTIONS:
+#
+#   -l -- Make a local installation in the current directory.  The
+#           only difference between a local and standard installation
+#           is that the standard installation is in
+#           "${ND574_SPACK_ROOT}/releases/", and a local installation
+#           isn't.
+
+if [ ${#ND574_SPACK_ROOT} == 0 ]; then
+    echo Need to setup dune-nd574.
+    exit 1
+fi
+
+function usage() {
+    echo usage: $(basename $0) spec
+    echo
+    echo "   -h   -- This help message."
+    echo "   -l   -- Install the release into the current directory."
+    echo
+    echo "Install a release chosen according to spec.  The spec must select"
+    echo "a unique release, and you can list the available ones with"
+    echo "'spack find'.  By default, the release will be installed into the"
+    echo "'\${ND574_SPACK_ROOT}/releases' directory."
+}
+
+# Set the default location for the release.
+while getopts "lh" opt; do
+    case $opt in
+	l) release_base="${PWD}"; shift;;
+	h) usage; exit 0;;
+    esac
+done
+
+release_version=${1}
+shift
+
+echo Installing packages needed for ${release_version}
+spack install ${release_version}
+
+release_install=$(spack location -i ${release_version})
+if [ ${#release_install} == 0 ]; then
+    echo Did not install ${release_version}
+    exit 1
+fi
+
+# Check if we should use the default release location.
+if [ ${#release_base} == 0 ]; then
+    release_base="${ND574_SPACK_ROOT}/releases"
+fi
+
+# Figure out the release architecture and the full release directory.
+release_arch=$(spack arch)
+release_dir="${release_base}/${release_version}~${release_arch}"
+
+# Make sure the release directory exists and go there.
+mkdir -p ${release_base}
+cd ${release_base}
+
+echo Making release ${release_version} available
+spack view soft ${release_dir} ${release_version} 
+
+# Copy over the standard setup template so that the nd574-setup script
+# can automatically set the paths.
+cp ${ND574_SPACK_ROOT}/scripts/setup.template ${release_dir}/setup.sh
+
+echo Installed in "${release_dir}"
+
+
