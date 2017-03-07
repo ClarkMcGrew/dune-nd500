@@ -11,21 +11,25 @@ fi
 ___spack_root=$(dirname $(realpath ${BASH_SOURCE}))
 cd ${___spack_root}
 
+GIT_REPO=git@github.com:ClarkMcGrew
+GIT_REPO=https://github.com/ClarkMcGrew
+
 # Make sure spack is up-to-date, and get it if it doesn't exist.  This
 # will define the setup script needed by dune-nd574/setup.sh and
 # prevents recursion when ./setup is run by this script.
 if [ ! -d ./spack ]; then
-   git clone git@github.com:ClarkMcGrew/spack.git
+   git clone ${GIT_REPO}/spack.git
 fi
 (cd spack; git pull)
 
-. ./setup.sh
-
 # Make sure hep-spack is up-to-date.
 if [ ! -d ./hep-spack ]; then
-   git clone git@github.com:ClarkMcGrew/hep-spack.git
+   git clone ${GIT_REPO}/hep-spack.git
 fi
 (cd hep-spack; git pull)
+
+# Setup the local configuration before doing anything else.
+source ./setup.sh
 
 # Make sure the hep-spack repo is known to spack.
 if ! (spack repo list --scope=site | grep hep-spack); then
