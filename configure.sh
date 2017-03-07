@@ -1,8 +1,19 @@
+#! /bin/bash
 # Setup the dune-nd500 code for developing.  This should run in a
 # directory that is going to be used to build the spack stuff, or
 # after it's been built to reconfigure.
 
-# Make sure spack is up-to-date.
+if [ "x${BASH_VERSION}" = "x" ]; then
+    echo This must be run using bash
+    exit 1
+fi
+
+___spack_root=$(dirname $(realpath ${BASH_SOURCE}))
+cd ${___spack_root}
+
+# Make sure spack is up-to-date, and get it if it doesn't exist.  This
+# will define the setup script needed by dune-nd574/setup.sh and
+# prevents recursion when ./setup is run by this script.
 if [ ! -d ./spack ]; then
    git clone git@github.com:ClarkMcGrew/spack.git
 fi
