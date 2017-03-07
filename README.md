@@ -1,19 +1,57 @@
 # dune-nd500
+
 A meta-repository to setup a working environment for DUNE nd500 work.  This
 will download and compile the necessary support code.
 
-This is installed by cloning the package from github
+INSTALLATION
+
+This is installed by cloning the package from github.  This won't make any
+changes outside of your <work-area> directory.  By convention, the
+suggested work area is "~/work/dune/software", but that is entirely up to
+you.
 
 cd <work-area>
+
+git clone https://github.com/ClarkMcGrew/dune-nd500.git
+or
 git clone git@github.com:ClarkMcGrew/dune-nd500.git
 
 cd dune-nd500
-source dune-nd500/setup.sh
+./configure.sh
+
+The configure script will (try to) compile the software, so it can take a
+long time.
+
+
+GENERAL USAGE
+
+The software can then be setup using
+
+source <work-area>/dune-nd500/setup.sh
 
 This will make sure that the basic infrastructure is installed and clone
-the necessary spack packages.
+the necessary spack packages, and can be safely run anytime.  It will
+define a convenient alias so it can be rerun (i.e. nd574-setup).  Be aware
+that if the configure script has not been run, this can take a *VERY* long
+time.
 
-The packages are then installed using the command
+After the setup.sh file (above) has been source, then you can configure a particular release of the software using
+
+nd574-setup <spec>
+
+where the spec is a wild card for the release name.  If this is run without an argument, a default release will be provided (usually "develop").  An example might be "nd574-setup release@0.0.0"
+
+LOW LEVEL SPACK
+
+The installable releases can be found by running
+
+spack info release
+
+The installed release can be found by running
+
+spack find release
+
+The package can then be installed using the command
 
 spack install release@<version>
 
