@@ -49,5 +49,5 @@ spack compiler find
 
 # Make sure a release is installed.  This should be changed when the
 # production release version changes.
-nd574-release release@0.0.0
+nd574-release -v release@0.0.0
 
