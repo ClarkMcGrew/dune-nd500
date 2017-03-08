@@ -50,6 +50,20 @@ class Release(Package):
         releaseFile = open(prefix + "/dune-nd574.release",'a')
         print >>releaseFile, self.name + "@" + str(self.version)
         print >>releaseFile, datetime.datetime.today()
+        print >>releaseFile, os.getenv("SPACK_CC")
+        print >>releaseFile, os.getenv("SPACK_CXX")
+        print >>releaseFile, os.getenv("SPACK_FC")
+        print >>releaseFile, os.getenv("SPACK_F77")
+        try: os.makedirs(prefix+"/bin")
+        except: pass
+        try: os.symlink(os.getenv("SPACK_CC"),prefix+"/bin/cc")
+        except: pass
+        try: os.symlink(os.getenv("SPACK_CXX"),prefix+"/bin/c++")
+        except: pass
+        try: os.symlink(os.getenv("SPACK_FC"),prefix+"/bin/fc")
+        except: pass
+        try: os.symlink(os.getenv("SPACK_F77"),prefix+"/bin/f77")
+        except: pass
         pass
 
 # Beware, here be dragons.  Below this you will find the
