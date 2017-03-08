@@ -34,6 +34,7 @@ function usage() {
     echo
     echo "   -h   -- This help message."
     echo "   -l   -- Install the release into the current directory."
+    echo "   -v   -- Be verbose."
     echo
     echo "Install a release chosen according to spec.  The spec must select"
     echo "a unique release, and you can list the available ones with"
@@ -41,10 +42,12 @@ function usage() {
     echo "'\${ND574_SPACK_ROOT}/releases' directory."
 }
 
+verbosity=""
 # Set the default location for the release.
-while getopts "lh" opt; do
+while getopts "lhv" opt; do
     case $opt in
 	l) release_base="${PWD}"; shift;;
+	v) verbosity="-v"; shift;;
 	h) usage; exit 0;;
     esac
 done
@@ -53,7 +56,7 @@ release_version=${1}
 shift
 
 echo Installing packages needed for ${release_version}
-spack install ${release_version}
+spack install ${verbosity} ${release_version}
 
 release_install=$(spack location -i ${release_version})
 if [ ${#release_install} == 0 ]; then
@@ -75,7 +78,7 @@ mkdir -p ${release_base}
 cd ${release_base}
 
 echo Making release ${release_version} available
-spack view soft ${release_dir} ${release_version} 
+spack view ${verbosity} symlink ${release_dir} ${release_version} 
 
 # Copy over the standard setup template so that the nd574-setup script
 # can automatically set the paths.
