@@ -18,11 +18,15 @@ ___path_remove ()  {
 }
 ___path_append ()  {
     ___path_remove $1 $2
-    eval export $1="\$$1:$2"
+    if [ -d ${2} ]; then
+	eval export $1="\$$1:$2"
+    fi
 }
 ___path_prepend () {
     ___path_remove $1 $2
-    eval export $1="$2:\$$1"
+    if [ -d ${2} ]; then
+	eval export $1="$2:\$$1"
+    fi
 }
 
 # Update the environment.
