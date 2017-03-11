@@ -58,7 +58,11 @@ class Release(Package):
         except: pass
         try: os.symlink(os.getenv("SPACK_CC"),prefix+"/bin/cc")
         except: pass
+        try: os.symlink(prefix+"/bin/cc",prefix+"/bin/gcc")
+        except: pass
         try: os.symlink(os.getenv("SPACK_CXX"),prefix+"/bin/c++")
+        except: pass
+        try: os.symlink(prefix+"/bin/c++",prefix+"/bin/g++")
         except: pass
         try: os.symlink(os.getenv("SPACK_FC"),prefix+"/bin/fc")
         except: pass
