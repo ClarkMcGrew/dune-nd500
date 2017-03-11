@@ -55,6 +55,13 @@ done
 release_version=${1}
 shift
 
+# Clean up the environment.  This makes sure that some of the
+# important variables are not set.
+unset LD_LIBRARY_PATH
+unset CC
+unset CXX
+unset ND574_ROOT
+
 echo Installing packages needed for ${release_version}
 spack install ${verbosity} ${release_version}
 
