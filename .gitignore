@@ -1,0 +1,4 @@
+*.pyc
+spack-build.out
+spack-build.env
+*~
