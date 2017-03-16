@@ -4,10 +4,10 @@ import os
 import datetime
 
 class Release(Package):
-    """A metapackage to release the entire shebang."""
+    """A metapackage to release the entire shebang for dune-ndx."""
 
-    url = "https://github.com/ClarkMcGrew/dune-nd500/"
-    homepage = "https://github.com/ClarkMcGrew/dune-nd500/"
+    url = "https://github.com/ClarkMcGrew/dune-ndx/"
+    homepage = "https://github.com/ClarkMcGrew/dune-ndx/"
 
     #The version which installs the latest copy of the release.  It's
     #not a number to emphasize that it's "moving"
@@ -40,6 +40,8 @@ class Release(Package):
     depends_on("root")          # The highest version.
     depends_on("root@6.08.02", when="@0.0.0")
 
+    depends_on("edep-sim")
+    
     def install(self,spec,prefix):
         """Create a file in the installation area.  This serves two purposes.
         First, it records what has been installed, and that will be
@@ -47,7 +49,7 @@ class Release(Package):
         something was installed.
 
         """
-        releaseFile = open(prefix + "/dune-nd574.release",'a')
+        releaseFile = open(prefix + "/dune-ndx.release",'a')
         print >>releaseFile, self.name + "@" + str(self.version)
         print >>releaseFile, datetime.datetime.today()
         print >>releaseFile, os.getenv("SPACK_CC")
@@ -71,7 +73,9 @@ class Release(Package):
         pass
 
 # Beware, here be dragons.  Below this you will find the
-# implementation of a metapackage.
+# implementation of a metapackage.  And by "metapackage", I mean that
+# it's disabled most of the features of a real package so that it just
+# installs stuff without there being any real source.
     
     def do_install(self,
                    keep_prefix=False,

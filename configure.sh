@@ -1,5 +1,5 @@
 #! /bin/bash
-# Setup the dune-nd500 code for developing.  This should run in a
+# Setup the dune-ndx code for developing.  This should run in a
 # directory that is going to be used to build the spack stuff, or
 # after it's been built to reconfigure.
 
@@ -11,11 +11,14 @@ fi
 ___spack_root=$(dirname $(realpath ${BASH_SOURCE}))
 cd ${___spack_root}
 
-GIT_REPO=git@github.com:ClarkMcGrew
+# For commit access...
+# GIT_REPO=git@github.com:ClarkMcGrew
+
+# For distribution.
 GIT_REPO=https://github.com/ClarkMcGrew
 
 # Make sure spack is up-to-date, and get it if it doesn't exist.  This
-# will define the setup script needed by dune-nd574/setup.sh and
+# will define the setup script needed by dune-ndx/setup.sh and
 # prevents recursion when ./setup is run by this script.
 if [ ! -d ./spack ]; then
    git clone ${GIT_REPO}/spack.git
@@ -36,9 +39,9 @@ if ! (spack repo list --scope=site | grep hep-spack); then
     spack repo add --scope=site ./hep-spack
 fi
 
-# Make sure the nd574-spack repo is known to spack.
-if ! (spack repo list --scope=site | grep nd574-spack); then
-    spack repo add --scope=site ./nd574-spack
+# Make sure the ndx-spack repo is known to spack.
+if ! (spack repo list --scope=site | grep ndx-spack); then
+    spack repo add --scope=site ./ndx-spack
 fi
 
 # Make sure that the compilers are known.
@@ -49,5 +52,5 @@ spack compiler find
 
 # Make sure a release is installed.  This should be changed when the
 # production release version changes.
-nd574-release -v release@0.0.0
+ndx-release -v release@0.0.0
 

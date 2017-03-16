@@ -1,12 +1,12 @@
 #!/bin/bash
-# Setup the spack configuration for use with the dune-nd574 software.
-# This assumes that the dun-nd574 package was cloned and has had the
+# Setup the spack configuration for use with the dune-ndx software.
+# This assumes that the dun-ndx package was cloned and has had the
 # configuration script run already.  After this has been run, the
 # spack-setup alias is available and can be used to reconfigure.
 #
 #  i.e.  The command
 #
-#     $ nd574-setup
+#     $ ndx-setup
 #
 # will cause the setup to be refreshed.
 #
@@ -14,7 +14,7 @@
 # software.  This needs to be done by sourcing the setup in that
 # release.
 #
-# The dune-nd574 uses a lightly customized version of spack.  In
+# The dune-ndx uses a lightly customized version of spack.  In
 # particular, it can use a local set of configuration files (not
 # associated with the users account).  To make this work, this defines
 # the SPACK_CONFIG environment variable which points to the current
@@ -29,23 +29,23 @@ fi
 ___release_candidate=$1
 shift
 
-export ND574_SPACK_ROOT
-ND574_SPACK_ROOT=$(dirname $(realpath ${BASH_SOURCE}))
+export NDX_SPACK_ROOT
+NDX_SPACK_ROOT=$(dirname $(realpath ${BASH_SOURCE}))
 
 # Set the location of the local spack configuration files.
 export SPACK_CONFIG
-SPACK_CONFIG=${ND574_SPACK_ROOT}/spack-config
+SPACK_CONFIG=${NDX_SPACK_ROOT}/spack-config
 
 # Make sure spack is configured
-if [ ! -f ${ND574_SPACK_ROOT}/spack/share/spack/setup-env.sh ]; then
-    ${ND574_SPACK_ROOT}/configure.sh
+if [ ! -f ${NDX_SPACK_ROOT}/spack/share/spack/setup-env.sh ]; then
+    ${NDX_SPACK_ROOT}/configure.sh
 fi
 
 # Setup the spack configuration
-source ${ND574_SPACK_ROOT}/spack/share/spack/setup-env.sh
+source ${NDX_SPACK_ROOT}/spack/share/spack/setup-env.sh
 
 # Setup the alias to rerun this setup.
-alias nd574-setup="source ${ND574_SPACK_ROOT}/setup.sh"
+alias ndx-setup="source ${NDX_SPACK_ROOT}/setup.sh"
 
 # Define some local worker functions to help set paths
 ___path_remove ()  {
@@ -63,7 +63,7 @@ ___path_prepend () {
 }
 
 # Add the scripts directory to the path.
-___path_prepend PATH ${ND574_SPACK_ROOT}/scripts
+___path_prepend PATH ${NDX_SPACK_ROOT}/scripts
 
 # Remove the local worker functions from the definitions.
 unset -f ___path_append
@@ -71,7 +71,7 @@ unset -f ___path_prepend
 unset -f ___path_remove
 
 # Now see if we should setup a particular release
-if [ ! -d ${ND574_SPACK_ROOT}/releases ]; then
+if [ ! -d ${NDX_SPACK_ROOT}/releases ]; then
     echo No releases installed
     unset -v ___release_candidate
     return
@@ -79,14 +79,14 @@ fi
 
 if [ ${#___release_candidate} == 0 ]; then
     ___release_candidate=$( \
-	find ${ND574_SPACK_ROOT}/releases -mindepth 1 -maxdepth 1 \
+	find ${NDX_SPACK_ROOT}/releases -mindepth 1 -maxdepth 1 \
 	| sort \
 	| grep $(spack arch) \
 	| tail -1)
 	       
 else
     ___release_candidate=$(\
-	find ${ND574_SPACK_ROOT}/releases -mindepth 1 -maxdepth 1 \
+	find ${NDX_SPACK_ROOT}/releases -mindepth 1 -maxdepth 1 \
 	| sort \
 	| grep ${___release_candidate} \
 	| tail -1)
@@ -106,6 +106,6 @@ fi
 
 source ${___release_candidate}/setup.sh
 
-echo ND574_ROOT setup for $(basename ${ND574_ROOT})
+echo NDX_ROOT setup for $(basename ${NDX_ROOT})
 
 unset -v ___release_candidate
