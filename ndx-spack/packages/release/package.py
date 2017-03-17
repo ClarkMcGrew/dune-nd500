@@ -41,6 +41,8 @@ class Release(Package):
     depends_on("root@6.08.02", when="@0.0.0")
 
     depends_on("edep-sim")
+
+    depends_on("dunendggd")
     
     def install(self,spec,prefix):
         """Create a file in the installation area.  This serves two purposes.
