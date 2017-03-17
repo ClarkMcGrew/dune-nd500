@@ -68,12 +68,15 @@ After the `setup.sh` file (above) has been source, then you can configure a
 particular release of the software using
 
 ```bash
-ndx-setup <spec>
+ndx-setup <version>
 ```
 
-where the spec is a wild card for the release name.  If this is run without
-an argument, a default release will be provided (In the early stages, it's
-"0.0.0").  In the future, an example might be `ndx-setup release@3.14.15`.
+where the <version> is a wild card for the release name.  If this is run
+without an argument, a default release will be provided (In the early
+stages, it's "0.0.0").  In the future, an example might be `ndx-setup
+release@3.14.15`, or equivalently `ndx-setup 3.14.15`.  The last version
+that matches both the wild card and the current machine architecture will
+be selected.
 
 If you find yourself using this a lot, it is convenient to put an alias in
 your .bashrc.
@@ -82,7 +85,7 @@ your .bashrc.
 alias ndx-setup="source <work-area>/dune-ndx/setup.sh"
 ```
 
-After running `ndx-setup` the install software will be in your path, and
+After running `ndx-setup` the installed software will be in your path, and
 ready to be used.  By default, both root and geant4 are setup and placed in
 your path.  It also defines environment variables so that it's fairly
 straight forward to use cmake with the installed libraries.  The following
@@ -94,7 +97,7 @@ installed.  This will have the value of `<work-area>/dune-ndx`.
 `NDX_ROOT`: This is the directory containing the installed release.  For
 example, the executables are installed in `${NDX_ROOT}/bin`.  For example,
 if you have run `ndx-setup release@0.0.0`, this has a value of
-`<work-areal/dune-ndx/releases/release@0.0.0~machine` (where machine is
+`<work-area>/dune-ndx/releases/release@0.0.0~machine` (where machine is
 system dependent).
 	   
 ## Low Level Hints
