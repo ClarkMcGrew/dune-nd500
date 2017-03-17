@@ -63,7 +63,7 @@ unset CXX
 unset NDX_ROOT
 
 echo Installing packages needed for ${release_version}
-spack install ${verbosity} ${release_version}
+spack install --jobs=2 ${verbosity} ${release_version}
 
 release_install=$(spack location -i ${release_version})
 if [ ${#release_install} == 0 ]; then
