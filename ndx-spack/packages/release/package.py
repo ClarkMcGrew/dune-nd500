@@ -34,11 +34,11 @@ class Release(Package):
 
     # The GEANT4 dependencies
     depends_on("geant4")        # The highest version. 
-    depends_on("geant4@10.02.p01", when="@0.0.0")
+    depends_on("geant4~qt@10.02.p02", when="@0.0.0")
 
     # The ROOT dependencies
     depends_on("root")          # The highest version.
-    depends_on("root@6.08.02", when="@0.0.0")
+    depends_on("root@6.06.06", when="@0.0.0")
 
     depends_on("edep-sim")
 
