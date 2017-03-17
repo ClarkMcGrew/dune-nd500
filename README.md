@@ -3,6 +3,13 @@
 A meta-repository to setup a working environment for DUNE ndx work.  This
 will download and compile the necessary support code.
 
+## Requirements
+
+This assumes that your shell is bash, and all of the shell scripts
+described assume bash is installed in "/bin/bash".  A lot of the installed
+code assumes that you are using at least gcc 4.9.x, and it hasn't been
+tested against other compilers.
+
 ## Installation
 
 This is installed by cloning the package from github.  This won't make any
@@ -22,16 +29,25 @@ or
 git clone git@github.com:ClarkMcGrew/dune-ndx.git
 ```
 
-The dune-ndx software can be configured by hand using the commands
+The preferred way to setup and install the software is to source
 
 ```bash
 cd dune-ndx
-./configure.sh
+source setup.sh
 ```
 
-You don't have to run the configuration script by hand since it will be run
-the first time the setup script is executed, but since it can take a long
-time to compile everything it's probably a good idea.
+Notice that setup is being sourced, not run (this assumes you are using
+bash).  This will appropriately modify the path, and define some
+environment variable described below.  The first time this is run will take
+quite a while (depending on the machine, a couple hours).
+
+If you want to run the installation in background or on a queue, the
+dune-ndx software can also be configured using the commands
+
+```bash
+cd dune-ndx
+./configure.sh >& configure.output &
+```
 
 ## General Usage
 
@@ -43,7 +59,7 @@ source <work-area>/dune-ndx/setup.sh [release specification]
 
 This will make sure that the basic infrastructure is installed and clone
 the necessary spack packages, and can be safely run anytime.  It will
-define a convenient alias so it can be rerun (i.e. `ndx-setup`).  Be aware
+define a convenience alias so it can be rerun (i.e. `ndx-setup`).  Be aware
 that if the configure script has not been run, this can take a *VERY* long
 time.  The optional argument is a wildcard for the release name.  If you
 don't specify a particular release, the default release will be setup.
@@ -59,38 +75,55 @@ where the spec is a wild card for the release name.  If this is run without
 an argument, a default release will be provided (In the early stages, it's
 "0.0.0").  In the future, an example might be `ndx-setup release@3.14.15`.
 
+If you find yourself using this a lot, it is convenient to put an alias in
+your .bashrc.
+
+```bash
+alias ndx-setup="source <work-area>/dune-ndx/setup.sh"
+```
+
 After running `ndx-setup` the install software will be in your path, and
-ready to be used.  In particular, these environment variables are defined
-so that it's fairly straight forward to use cmake with the installed
-libraries.  The following special environment variables are also defined.
+ready to be used.  By default, both root and geant4 are setup and placed in
+your path.  It also defines environment variables so that it's fairly
+straight forward to use cmake with the installed libraries.  The following
+special environment variables are also defined.
+
+`NDX_SPACK_ROOT`: This is the directory where the bundling package is
+installed.  This will have the value of `<work-area>/dune-ndx`.
 
 `NDX_ROOT`: This is the directory containing the installed release.  For
-			example, the executables are installed in `${NDX_ROOT}/bin`
+example, the executables are installed in `${NDX_ROOT}/bin`.  For example,
+if you have run `ndx-setup release@0.0.0`, this has a value of
+`<work-areal/dune-ndx/releases/release@0.0.0~machine` (where machine is
+system dependent).
 	   
-`NDX_SPACK_ROOT`: This is the directory where the bundling package is installed.
+## Low Level Hints
 
-## Low Level SPACK Hints
+These are hints, not instructions, but may help guide you in the right
+direction.
 
-The installable releases can be found by running
+The releases are defined in
+`${NDX_SPACK_ROOT}/ndx-spack/packages/release/package.py` and can be
+installed using
+
+```ndx-release -v release@<version>```
+
+The releases that can be installed can be found by running
 
 ```
 spack info release
 ```
 
-The installed release can be found by running
+The installed releases can be found by running
 
 ```
 spack find release
 ```
 
-The package can then be installed using the command
+If you want to force a recompile of part of a release, you can use
 
 ```
-spack install release@<version>
+spack uninstall --dependents <package>
+./configure.sh
 ```
 
-The most recent packages can be installed using
-
-```
-spack install release@master
-```
