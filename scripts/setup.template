@@ -8,6 +8,11 @@
 # source ./setup.sh
 #
 
+if [ "x${BASH_VERSION}" = "x" ]; then
+    echo This must be run using bash
+    exit 1
+fi
+
 export NDX_ROOT
 NDX_ROOT=$(dirname $(realpath ${BASH_SOURCE}))
 
