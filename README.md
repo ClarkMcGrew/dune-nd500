@@ -22,28 +22,31 @@ or
 git clone git@github.com:ClarkMcGrew/dune-ndx.git
 ```
 
+The dune-ndx software can be configured by hand using the commands
+
 ```bash
 cd dune-ndx
 ./configure.sh
 ```
 
-The configure script will (try to) compile the software, so it can take a
-long time.
-
+You don't have to run the configuration script by hand since it will be run
+the first time the setup script is executed, but since it can take a long
+time to compile everything it's probably a good idea.
 
 ## General Usage
 
-The software can then be setup using
+The dune-ndx software is setup using
 
 ```bash
-source <work-area>/dune-ndx/setup.sh
+source <work-area>/dune-ndx/setup.sh [release specification]
 ```
 
 This will make sure that the basic infrastructure is installed and clone
 the necessary spack packages, and can be safely run anytime.  It will
 define a convenient alias so it can be rerun (i.e. `ndx-setup`).  Be aware
 that if the configure script has not been run, this can take a *VERY* long
-time.
+time.  The optional argument is a wildcard for the release name.  If you
+don't specify a particular release, the default release will be setup.
 
 After the `setup.sh` file (above) has been source, then you can configure a
 particular release of the software using
@@ -52,7 +55,9 @@ particular release of the software using
 ndx-setup <spec>
 ```
 
-where the spec is a wild card for the release name.  If this is run without an argument, a default release will be provided (usually "develop").  An example might be `ndx-setup release@0.0.0`
+where the spec is a wild card for the release name.  If this is run without
+an argument, a default release will be provided (In the early stages, it's
+"0.0.0").  In the future, an example might be `ndx-setup release@3.14.15`.
 
 After running `ndx-setup` the install software will be in your path, and
 ready to be used.  In particular, these environment variables are defined
