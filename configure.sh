@@ -21,23 +21,18 @@ GIT_REPO=https://github.com/ClarkMcGrew
 # will define the setup script needed by dune-ndx/setup.sh and
 # prevents recursion when ./setup is run by this script.
 if [ ! -d ./spack ]; then
-   git clone ${GIT_REPO}/spack.git
+    git clone https://github.com/LLNL/spack.git
+    # Patch SPACK so that it understand the SPACK_CONFIG env variable
+    (cd spack; patch -p1 < ../scripts/spack.patch)
+    # Change the misc_cach which has unfortunate hardcoded default.
+    cat > spack/etc/spack/config.yaml <<EOF 
+config:
+   misc_cache: ${PWD}/spack-config/cache
+EOF
 fi
-(cd spack; git pull)
-
-# Make sure hep-spack is up-to-date.
-if [ ! -d ./hep-spack ]; then
-   git clone ${GIT_REPO}/hep-spack.git
-fi
-(cd hep-spack; git pull)
 
 # Setup the local configuration before doing anything else.
 source ./setup.sh
-
-# Make sure the hep-spack repo is known to spack.
-if ! (spack repo list --scope=site | grep hep-spack); then
-    spack repo add --scope=site ./hep-spack
-fi
 
 # Make sure the ndx-spack repo is known to spack.
 if ! (spack repo list --scope=site | grep ndx-spack); then
@@ -54,3 +49,4 @@ spack compiler find
 # production release version changes.
 ndx-release -v release@0.0.0
 
+# All done.

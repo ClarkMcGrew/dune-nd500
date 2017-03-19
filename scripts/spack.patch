@@ -1,0 +1,13 @@
+--- spack/lib/spack/spack/__init__.py	2017-03-17 12:38:11.309829274 -0400
++++ dune-ndx/spack/lib/spack/spack/__init__.py	2017-03-17 09:34:59.764727654 -0400
+@@ -59,7 +60,9 @@
+ mock_packages_path = join_path(repos_path, "builtin.mock")
+ 
+ # User configuration location
+-user_config_path = os.path.expanduser('~/.spack')
++user_config_path = os.environ.get("SPACK_CONFIG")
++if user_config_path == None: user_config_path = '~/.spack'
++user_config_path = os.path.expanduser(user_config_path)
+ 
+ prefix = spack_root
+ opt_path       = join_path(prefix, "opt")
