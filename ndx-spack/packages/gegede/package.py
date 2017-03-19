@@ -16,12 +16,9 @@ class Gegede(Package):
     extends('python')
 
     depends_on("root")
-    depends_on("libxml2")
     depends_on("libxslt")
     depends_on("py-setuptools")
 
     def install(self, spec, prefix):
-        print spec
-        print prefix
         python('setup.py', 'install', '--prefix=%s' % prefix)
 

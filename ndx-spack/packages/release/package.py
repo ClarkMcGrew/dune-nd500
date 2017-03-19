@@ -33,12 +33,12 @@ class Release(Package):
     # any release version between release@0.0 and release@1.0.
 
     # The GEANT4 dependencies
-    depends_on("geant4")        # The highest version. 
+    depends_on("geant4~qt")        # The highest version. 
     depends_on("geant4~qt@10.02.p02", when="@0.0.0")
 
     # The ROOT dependencies
     depends_on("root")          # The highest version.
-    depends_on("root@6.06.06", when="@0.0.0")
+    depends_on("root@6.08.02", when="@0.0.0")
 
     depends_on("edep-sim")
 
@@ -52,12 +52,12 @@ class Release(Package):
 
         """
         releaseFile = open(prefix + "/dune-ndx.release",'a')
-        print >>releaseFile, self.name + "@" + str(self.version)
-        print >>releaseFile, datetime.datetime.today()
-        print >>releaseFile, os.getenv("SPACK_CC")
-        print >>releaseFile, os.getenv("SPACK_CXX")
-        print >>releaseFile, os.getenv("SPACK_FC")
-        print >>releaseFile, os.getenv("SPACK_F77")
+        print >>releaseFile, "Package:", self.name + "@" + str(self.version)
+        print >>releaseFile, "Installation Date:", datetime.datetime.today()
+        print >>releaseFile, "C Compiler:", os.getenv("SPACK_CC")
+        print >>releaseFile, "C++ Compiler:", os.getenv("SPACK_CXX")
+        print >>releaseFile, "F90 (fc) Compiler:", os.getenv("SPACK_FC")
+        print >>releaseFile, "F77 Compiler:", os.getenv("SPACK_F77")
         try: os.makedirs(prefix+"/bin")
         except: pass
         try: os.symlink(os.getenv("SPACK_CC"),prefix+"/bin/cc")
