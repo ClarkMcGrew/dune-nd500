@@ -44,17 +44,6 @@ fi
 # Setup the spack configuration
 source ${NDX_SPACK_ROOT}/spack/share/spack/setup-env.sh
 
-# Because you know you want them...
-. thisroot.sh >& /dev/null
-if [ $? != 0 ]; then
-    echo ROOT is not available
-fi
-
-. geant4.sh >& /dev/null
-if [ $? != 0 ]; then
-    echo GEANT4 is not available
-fi
-
 # Setup the alias to rerun this setup.
 alias ndx-setup="source ${NDX_SPACK_ROOT}/setup.sh"
 
@@ -118,5 +107,17 @@ fi
 source ${___release_candidate}/setup.sh
 
 echo NDX_ROOT setup for $(basename ${NDX_ROOT})
+
+# Because you know you want them...
+. thisroot.sh >& /dev/null
+if [ $? != 0 ]; then
+    echo ROOT is not available
+fi
+
+# Because you know you want them...
+. geant4.sh >& /dev/null
+if [ $? != 0 ]; then
+    echo GEANT4 is not available
+fi
 
 unset -v ___release_candidate
