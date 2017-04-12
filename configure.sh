@@ -28,6 +28,7 @@ if [ ! -d ./spack ]; then
     cat > spack/etc/spack/config.yaml <<EOF 
 config:
    misc_cache: ${PWD}/spack-config/cache
+   build_stage: ${PWD}/spack/var/spack/stage
 EOF
 fi
 
