@@ -36,7 +36,8 @@ class Root(Package):
     version('6.06.06', '4308449892210c8d36e36924261fea26')
     version('6.06.04', '55a2f98dd4cea79c9c4e32407c2d6d17')
     version('6.06.02', 'e9b8b86838f65b0a78d8d02c66c2ec55')
-
+    version('5.34.36', '6a1ad549b3b79b10bbb1f116b49067ee')
+    
     if sys.platform == 'darwin':
         patch('math_uint.patch', when='@6.06.02')
         patch('root6-60606-mathmore.patch', when='@6.06.06')
@@ -44,7 +45,8 @@ class Root(Package):
     variant('graphviz', default=False, description='Enable graphviz support')
     variant('gdml', default=True, description='Enable GDML support')
     variant('pythia8', default=False, description='Enable pythia8 support')
-
+    variant('debug', default=False, description='Enable debugging support')
+    
     depends_on("cmake", type='build')
     depends_on("pcre")
     depends_on("fftw")
@@ -67,7 +69,12 @@ class Root(Package):
             options.append('-DCMAKE_BUILD_TYPE:STRING=Debug')
         else:
             options.append('-DCMAKE_BUILD_TYPE:STRING=Release')
-        options.append('-Dcxx14=on')
+        if 'root@5' in spec:
+            print "using cxx98"
+            options.append('-DCMAKE_CXX_STANDARD=98')
+            options.append('-Dcxx14=off')
+        else:
+            options.append('-Dcxx14=on')
         options.append('-Dcocoa=off')
         options.append('-Dbonjour=off')
         options.append('-Dx11=on')
