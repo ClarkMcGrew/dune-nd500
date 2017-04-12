@@ -12,6 +12,7 @@ class Release(Package):
     #The version which installs the latest copy of the release.  It's
     #not a number to emphasize that it's "moving"
     version('develop', url='dummy')
+    version('1.0.0', url='dummy')
     version('0.0.0', url='dummy')
     
     # The dependencies for the release.  These should be in reverse order with
@@ -32,24 +33,32 @@ class Release(Package):
     # depends_on('stuff',when='@0.0:@1.0') will depend on 'stuff' for
     # any release version between release@0.0 and release@1.0.
 
-    # The GEANT4 dependencies
-    depends_on("geant4~qt")        # The highest version. 
-    depends_on("geant4~qt@10.02.p02", when="@0.0.0")
-
+    # The necessary support software.  This should only include
+    # packages that are independently required.  It's not a good idea
+    # to list all the packages that the later dependencies require.
+    # Initially, this includes cmake which is going to be needed by
+    # users, and environment-modules which is needed to maintain the
+    # environment.
+    depends_on("cmake")
+    depends_on("environment-modules")
+    
     # The ROOT dependencies
-    depends_on("root")          # The highest version.
-    depends_on("root@6.08.02", when="@0.0.0")
+    depends_on("root+gdml+debug@6.08.02", when="@1.0.0:")
+    depends_on("root@5.34.36", when="@0.0.0:0.0.99")
 
-    depends_on("edep-sim")
+    # The GEANT4 dependencies
+    depends_on("geant4~qt+debug@10.02.p02", when="@1.0.0:")
+    depends_on("geant4~qt+debug@10.02.p02", when="@0.0.0:0.0.99")
 
-    depends_on("dunendggd")
+    # depends_on("edep-sim")
+
+    # depends_on("dunendggd")
     
     def install(self,spec,prefix):
         """Create a file in the installation area.  This serves two purposes.
         First, it records what has been installed, and that will be
         copied to any views.  Second, it lets spack know that
         something was installed.
-
         """
         releaseFile = open(prefix + "/dune-ndx.release",'a')
         print >>releaseFile, "Package:", self.name + "@" + str(self.version)
@@ -58,6 +67,9 @@ class Release(Package):
         print >>releaseFile, "C++ Compiler:", os.getenv("SPACK_CXX")
         print >>releaseFile, "F90 (fc) Compiler:", os.getenv("SPACK_FC")
         print >>releaseFile, "F77 Compiler:", os.getenv("SPACK_F77")
+        # Setup compiler executables so that everything uses the right
+        # compiler.  This overrides the system default, and links to
+        # the compiler that SPACK chose for this installation.
         try: os.makedirs(prefix+"/bin")
         except: pass
         try: os.symlink(os.getenv("SPACK_CC"),prefix+"/bin/cc")
@@ -78,7 +90,7 @@ class Release(Package):
 # implementation of a metapackage.  And by "metapackage", I mean that
 # it's disabled most of the features of a real package so that it just
 # installs stuff without there being any real source.
-    
+
     def do_install(self,
                    keep_prefix=False,
                    keep_stage=False,
