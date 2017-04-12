@@ -1,20 +1,20 @@
 #!/bin/bash
 #
-#  Build and install a release for use.  This takes a single argument
-#  which is the release version.  For example
+#  Build a release.  This takes a single argument which is the release
+#  version.  For example
 #
 #  ndx-release release@develop
 #  ndx-release release@3.1.4
 #  ndx-release production@1.0.0
 #
-# By default, these create a spack "view" in
-#  ${NDX_SPACK_ROOT}/releases/. For example, 
+# This can create a spack "view" in ${NDX_SPACK_ROOT}/releases/. For
+#  example,
 #
-#  ndx-release release@develop
+#  ndx-release release@0.0.0
 #
 # will create
 #
-# ${NDX_SPACK_ROOT}/releases/release@develop~<architecture>/
+# ${NDX_SPACK_ROOT}/releases/release@0.0.0~<architecture>/
 #
 # OPTIONS:
 #
@@ -23,18 +23,29 @@
 #           is that the standard installation is in
 #           "${NDX_SPACK_ROOT}/releases/", and a local installation
 #           isn't.
+#   -v -- Be verbose in the build.
+#   -q -- Be quiet during the build.
+#   -j<n> -- Set the number of CPU to be used (default is 1).
+#   -t -- Create a tree.  This can be used as a release.
 
 if [ ${#NDX_SPACK_ROOT} == 0 ]; then
     echo Need to setup dune-ndx.
     exit 1
 fi
 
+verbosity="-v"
+job_count="--jobs=1"
+make_tree="yes"
+
 function usage() {
     echo usage: $(basename $0) spec
     echo
     echo "   -h   -- This help message."
+    echo "   -j<n> -- Set --jobs to <n> (Default: ${job_count})."
     echo "   -l   -- Install the release into the current directory."
-    echo "   -v   -- Be verbose."
+    echo "   -v   -- Be verbose (Default: ${verbosity})."
+    echo "   -q   -- Be quiet."
+    echo "   -t   -- Don't build the release tree."
     echo
     echo "Install a release chosen according to spec.  The spec must select"
     echo "a unique release, and you can list the available ones with"
@@ -42,14 +53,14 @@ function usage() {
     echo "'\${NDX_SPACK_ROOT}/releases' directory."
 }
 
-verbosity=""
-job_count="--jobs=1"
 # Set the default location for the release.
-while getopts j:lhv opt; do
+while getopts j:lhqtv opt; do
     case $opt in
 	j) job_count="--jobs=${OPTARG}";;
 	l) release_base="${PWD}";;
+	q) verbosity="";;
 	v) verbosity="-v";;
+	t) make_tree="no";;
 	h) usage; exit 0;;
     esac
 done
@@ -66,12 +77,20 @@ unset CXX
 unset NDX_ROOT
 
 echo Installing packages needed for ${release_version}
-spack install ${job_count} ${verbosity} ${release_version}
+spack install --clean --keep-stage ${job_count} ${verbosity} ${release_version}
 
 release_install=$(spack location -i ${release_version})
 if [ ${#release_install} == 0 ]; then
     echo Did not install ${release_version}
     exit 1
+fi
+
+if [ ${make_tree} == "no" ]; then
+    echo Did not make a release tree for ${release_version}
+    echo Use environment modules to access release.  Also
+    echo ndx-setup ${release_version}
+    echo will make the release available.
+    exit 0
 fi
 
 # Check if we should use the default release location.
@@ -84,8 +103,12 @@ release_arch=$(spack arch)
 release_dir="${release_base}/${release_version}~${release_arch}"
 
 # Make sure the release directory exists and go there.
+
 mkdir -p ${release_base}
 cd ${release_base}
+
+# Make sure that the release directory does not exist.
+rm -rf ${release_dir}
 
 echo Making release ${release_version} available
 spack view ${verbosity} hardlink ${release_dir} ${release_version} 
