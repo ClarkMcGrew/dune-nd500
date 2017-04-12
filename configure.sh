@@ -48,6 +48,6 @@ spack compiler find
 
 # Make sure a release is installed.  This should be changed when the
 # production release version changes.
-ndx-release -v release@0.0.0
+ndx-release -v release@1.0.0
 
 # All done.
