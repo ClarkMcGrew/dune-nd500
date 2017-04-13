@@ -29,6 +29,28 @@ fi
 ___release_candidate=$1
 shift
 
+# Add the scripts.
+___path_remove ()  {
+    export $1=$(eval echo -n \$$1 | \
+	awk -v RS=: -v ORS=: '$0 != "'$2'"' | \
+	sed 's/:$//'); 
+}
+___path_append ()  {
+    ___path_remove $1 $2
+    if [ -d ${2} ]; then
+	eval export $1="\$$1:$2"
+    fi
+}
+___path_prepend () {
+    ___path_remove $1 $2
+    if [ -d ${2} ]; then
+	eval export $1="$2:\$$1"
+    fi
+}
+
+# Update the environment.
+___path_prepend PATH "${NDX_SPACK_ROOT}/scripts"
+
 if [ "x$___release_candidate" = "x-h" ]; then
     echo "usage: ndx-setup <release-version>"
     echo "   The default is the highest version found."
@@ -54,8 +76,17 @@ source ${NDX_SPACK_ROOT}/spack/share/spack/setup-env.sh
 alias ndx-setup="source ${NDX_SPACK_ROOT}/setup.sh"
 
 # Define the environment modules.
-MODULESHOME=$(spack location --install-dir environment-modules)/Modules
-source ${MODULESHOME}/init/bash
+MODULESHOME=$(spack location --install-dir environment-modules 2> /dev/null)
+if [ $? != 0 ]; then
+    echo Release not installed yet.
+    unset -v ___release_candidate
+    unset -f ___path_append
+    unset -f ___path_prepend
+    unset -f ___path_remove
+    return 1
+fi
+
+source ${MODULESHOME}/Modules/init/bash
 source ${MODULESHOME}/init/bash_completion
 
 # Make sure the environment is clean.
@@ -115,29 +146,6 @@ if [ $? != 0 ]; then
 fi
 
 unset -v ___release_candidate
-
-# Add the scripts.
-___path_remove ()  {
-    export $1=$(eval echo -n \$$1 | \
-	awk -v RS=: -v ORS=: '$0 != "'$2'"' | \
-	sed 's/:$//'); 
-}
-___path_append ()  {
-    ___path_remove $1 $2
-    if [ -d ${2} ]; then
-	eval export $1="\$$1:$2"
-    fi
-}
-___path_prepend () {
-    ___path_remove $1 $2
-    if [ -d ${2} ]; then
-	eval export $1="$2:\$$1"
-    fi
-}
-
-# Update the environment.
-___path_prepend PATH "${NDX_SPACK_ROOT}/scripts"
-
 unset -f ___path_append
 unset -f ___path_prepend
 unset -f ___path_remove
