@@ -97,10 +97,10 @@ module purge
 if [ ${#___release_candidate} != 0 ]; then
     ___release_candidate=$(spack find release \
 				  | sed 's/\x1B[[:print:]]*[mGK]//g' \
-				  | tail +2 \
+				  | tail -n +2 \
 				  | grep ${___release_candidate} \
 				  | sort \
-				  | tail -1)
+				  | tail -n -1)
 fi
 
 # If there isn't a release, find a default. The sed command is doing
@@ -108,9 +108,9 @@ fi
 if [ ${#___release_candidate} == 0 ]; then
     ___release_candidate=$(spack find release \
 				  | sed 's/\x1B[[:print:]]*[mGK]//g' \
-				  | tail +2 \
+				  | tail -n +2 \
 				  | sort \
-				  | tail -1)
+				  | tail -n -1)
 fi
 
 # If there still isn't a release, print a message and stop.
