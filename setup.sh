@@ -58,7 +58,7 @@ if [ "x$___release_candidate" = "x-h" ]; then
 fi
 
 export NDX_SPACK_ROOT
-NDX_SPACK_ROOT=$(dirname $(realpath ${BASH_SOURCE}))
+NDX_SPACK_ROOT=$(dirname $(readlink -f ${BASH_SOURCE}))
 
 # Set the location of the local spack configuration files.
 export SPACK_CONFIG

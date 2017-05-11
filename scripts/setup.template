@@ -14,7 +14,7 @@ if [ "x${BASH_VERSION}" = "x" ]; then
 fi
 
 export NDX_ROOT
-NDX_ROOT=$(dirname $(realpath ${BASH_SOURCE}))
+NDX_ROOT=$(dirname $(readlink -f ${BASH_SOURCE}))
 
 ___path_remove ()  {
     export $1=$(eval echo -n \$$1 | \
