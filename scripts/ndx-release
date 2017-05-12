@@ -34,7 +34,7 @@ if [ ${#NDX_SPACK_ROOT} == 0 ]; then
 fi
 
 verbosity="-v"
-job_count="--jobs=1"
+job_count="${SPACK_JOBS}"
 make_tree="yes"
 
 function usage() {
