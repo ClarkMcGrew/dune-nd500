@@ -53,7 +53,7 @@ class Root(Package):
     depends_on("graphviz", when="+graphviz")
     depends_on("python")
     depends_on("gsl")
-    depends_on("libxml2+python")
+    depends_on("libxml2")
     depends_on("jpeg")
 
     if sys.platform != 'darwin':
