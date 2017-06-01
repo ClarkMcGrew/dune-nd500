@@ -50,8 +50,6 @@ class Release(Package):
     depends_on("geant4~qt+debug@10.02.p02", when="@1.0.0:")
     depends_on("geant4~qt+debug@10.02.p02", when="@0.0.0:0.0.99")
 
-    depends_on("edep-sim")
-
     # depends_on("dunendggd")
     
     def install(self,spec,prefix):
